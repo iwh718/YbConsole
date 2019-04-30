@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 
 import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.AppInfo
+import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
 import iwh.com.simplewen.win0.ybconsole.activity.modal.LightItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import work.RequestSingle
@@ -25,7 +26,7 @@ import work.RequestSingle
  * 轻应用列表
  */
 @ExperimentalCoroutinesApi
-class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>) :
+class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>,private val coroutines:BaseActivity) :
     RecyclerView.Adapter<LightRecycleAdapter.LightRecycleViewHolder>() {
 
     inner class LightRecycleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,6 +45,13 @@ class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>) :
     }
 
     override fun onBindViewHolder(holder: LightRecycleViewHolder, position: Int) {
+        fun  toMore(){
+            YbApp.getContext().startActivity(Intent(YbApp.getContext(), AppInfo::class.java).apply {
+                putExtra("appId",lightApp[position].itemUrl)
+                putExtra("appLogoUrl",lightApp[position].itemLogoUrl)
+                putExtra("appName",lightApp[position].itemName)
+            })
+        }
         holder.itemLevel.text = "权限等级：${lightApp[position].itemLevel}"
         holder.itemName.text = "应用：${lightApp[position].itemName}"
         holder.itemStatus.text = "状态：${lightApp[position].itemStatus}"
@@ -58,23 +66,17 @@ class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>) :
                             R.id.lightPopMore ->{
                                // Tos(lightApp[position].itemUrl,YbApp.getContext())
 
-                               YbApp.getContext().startActivity(Intent(YbApp.getContext(), AppInfo::class.java).apply {
-                                   putExtra("appId",lightApp[position].itemUrl)
-                                   putExtra("appLogoUrl",lightApp[position].itemLogoUrl)
-                                   putExtra("appName",lightApp[position].itemName)
-                               })
-
+                              toMore()
                                 true
 
                             }
                             //调试
                             R.id.lightPopDebug->{
-                                Tos(lightApp[position].itemUrl,YbApp.getContext())
+                              //  Tos(lightApp[position].itemUrl,YbApp.getContext())
+                                RequestSingle.getDebugImg(coroutines,lightApp[position].itemUrl)
                                 true
                             }
-                            else->{true
-
-                            }
+                            else-> true
                         }
                     }
                     this@inner.show()
@@ -82,6 +84,9 @@ class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>) :
             }
         }
         Glide.with(holder.itemLevel).load(lightApp[position].itemLogoUrl).apply(RequestOptions.bitmapTransform(CircleCrop())).into(holder.itemLogo)
+        holder.itemLogo.setOnClickListener {
+            toMore()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LightRecycleViewHolder {

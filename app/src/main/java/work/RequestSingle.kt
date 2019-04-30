@@ -2,20 +2,25 @@ package work
 
 
 import Utils.Tos
+import android.app.AlertDialog
 import android.util.Log
+import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
+import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
-import iwh.com.simplewen.win0.ybconsole.activity.modal.LightItem
-import iwh.com.simplewen.win0.ybconsole.activity.modal.UserInfo
-import iwh.com.simplewen.win0.ybconsole.activity.modal.WikiMobileApi
-import iwh.com.simplewen.win0.ybconsole.activity.modal.WikiWebApi
+import iwh.com.simplewen.win0.ybconsole.activity.modal.*
+import kotlinx.android.synthetic.main.activity_app_info.*
+import kotlinx.android.synthetic.main.activity_msg_box.*
+import kotlinx.android.synthetic.main.debug_layout.*
+import kotlinx.android.synthetic.main.debug_layout.view.*
 import kotlinx.android.synthetic.main.light_app_fragment.*
 import kotlinx.android.synthetic.main.user_fragment.*
 import kotlinx.android.synthetic.main.wiki_fragment.*
 import kotlinx.coroutines.*
 import okhttp3.*
+import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.lang.Exception
@@ -30,6 +35,7 @@ import kotlin.collections.ArrayList
  */
 @ExperimentalCoroutinesApi
 object RequestSingle {
+
     var cookieStore: HashMap<String, MutableList<Cookie>> = HashMap()
     private val client = OkHttpClient.Builder().cookieJar(object : CookieJar {
         override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
@@ -40,16 +46,21 @@ object RequestSingle {
             this@RequestSingle.cookieStore[url.host()] = cookies
         }
     }).connectTimeout(8, TimeUnit.SECONDS).build() //初始化请求
-
     private const val manageUrl = "https://o.yiban.cn/manage/index"
     private const val userUrl = "https://o.yiban.cn/global/user"
     private const val wikiUrl = "https://o.yiban.cn/wiki/index.php?page=%E6%98%93%E7%8F%ADapi"
     private const val lightBaseUrl = "https://o.yiban.cn/manage/appinfo?appid="//应用详情地址
+    private const val msgBoxUrl = "https://o.yiban.cn/global/msgbox"//消息列表
+    private const val msgInfoUrl = "https://o.yiban.cn/ajax/readmsg"//消息内容
+    private const val debugUrl = "https://o.yiban.cn/page/goto?act=iapp_debug&appid="
     val LightDataNoAuth = ArrayList<LightItem>()//未认证
     val LightDataAuth = ArrayList<LightItem>()//认证应用
     val wikiWebApiData = ArrayList<WikiWebApi>()//web接口
     val wikiMobileData = ArrayList<WikiMobileApi>()//移动接口
     val UserInfoData = ArrayList<UserInfo>()//开发者信息
+    val AppInfoData = ArrayList<AppInfo>()//轻应用详细数据
+    val MsgBoxData = ArrayList<MsgBoxList>()//消息列表
+
 
     /**
      * 获取轻应用信息
@@ -239,7 +250,7 @@ object RequestSingle {
                                     wikiInterfaceName =  wInterface,
                                     wikiName =  wName
                                 )
-                                Log.d("@@wiki: ***********", wikiWebData.toString())
+                             //   Log.d("@@wiki: ***********", wikiWebData.toString())
                                 this@RequestSingle.wikiWebApiData.add(wikiWebData)
                             }
 
@@ -287,6 +298,7 @@ object RequestSingle {
 
 
     fun getAppInfo(appId:String,coroutines: BaseActivity) = coroutines.launch {
+        this@RequestSingle.AppInfoData.clear()
         this@RequestSingle.client.newCall(Request.Builder().url("${this@RequestSingle.lightBaseUrl}$appId").build()).enqueue(object :Callback{
             override fun onFailure(call: Call, e: IOException) {
                 coroutines.launch {
@@ -297,8 +309,155 @@ object RequestSingle {
             override fun onResponse(call: Call, response: Response) {
                 val res = response.body()!!.string()
                 val doc = Jsoup.parse(res)
-                Log.d("@@AppInfo:",doc.html())
+                val article = doc.select(".test-user")
+                val lisCount = article.select(".list-cont")
+                val checkStatusEle = lisCount[0].select("ul li")[0].select(".content")
+                val isOnline = checkStatusEle.select("a").isNullOrEmpty()
 
+                try{
+                    val appInfoData = AppInfo(
+                        appID = article.select(".clearfix .user-info .pull-right .details")[0].html(),
+                        appPassword = article.select(".clearfix .user-info .pull-right .details")[1].html(),
+                        appDesc = lisCount[1].select("ul li")[1].select(".content").html(),
+                        appOutSideAdd = lisCount[2].select("ul li")[2].select(".content").html(),
+                        appShow =  lisCount[1].select("ul li")[3].select(".content").html(),
+                        appSideAdd = lisCount[2].select("ul li")[0].select(".content").html(),
+                        appStatus = if(isOnline)checkStatusEle.html() else checkStatusEle.select("a").html(),
+                        appTestUrl = lisCount[3].select("ul li")[0].select(".content img").attr("src"),
+                        appUse =  lisCount[1].select("ul li")[4].select(".content").html()
+
+                    )
+                    this@RequestSingle.AppInfoData.add(appInfoData)
+                 //   Log.d("@@AppInfo:",appInfoData.toString())
+                    coroutines.launch(Dispatchers.Main) {
+                        with(coroutines){
+                            AppInfoStatus.text = "审核状态：${appInfoData.appStatus}"
+                            AppInfoDesc.text = "简介:${appInfoData.appDesc}"
+                            AppInfoOutSiteAdd.text ="站外地址:${ appInfoData.appOutSideAdd}"
+                            AppInfoSiteAdd.text = "站内地址:${appInfoData.appSideAdd}"
+                            AppInfoUse.text = "使用场景:${appInfoData.appUse}"
+                            AppInfoShow.text = "用户可见:${appInfoData.appShow}"
+                            AppInfoID.text = appInfoData.appID
+                            AppInfoOnlineBtn.visibility = if(isOnline){
+                                View.GONE
+                            }else {
+                                View.VISIBLE
+                            }
+                            AppInfoPassword.text = appInfoData.appPassword
+                            Glide.with(coroutines).load(appInfoData.appTestUrl).into(AppInfoTest)
+                        }
+                    }
+                }catch (e:Exception){
+                    coroutines.launch (Dispatchers.Main){
+                        Tos("解析失败！",coroutines)
+                    }
+                }
+
+
+
+            }
+        })
+    }
+
+    /**
+     * 获取预览
+     */
+    fun getDebugImg(coroutines: BaseActivity,appId:String) = coroutines.launch {
+        this@RequestSingle.client.newCall(Request.Builder().url("${this@RequestSingle.debugUrl}$appId").build()).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                coroutines.launch (Dispatchers.Main){
+                    Tos("解析失败！",coroutines)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+               val text = response.body()!!.string()
+                val doc =Jsoup.parse(text)
+                val imgUrl = doc.select(".qrcode img").attr("src")
+                coroutines.launch (Dispatchers.Main){
+                    val ly = coroutines.layoutInflater.inflate(R.layout.debug_layout ,null)
+                    Glide.with(coroutines).load(imgUrl).into(ly.debugImg)
+                    AlertDialog.Builder(coroutines).setView(ly).create().show()
+                }
+            }
+        })
+    }
+
+
+    /**
+     * 获取消息
+     */
+    fun getMsgBoxList(coroutines: BaseActivity){
+        this@RequestSingle.MsgBoxData.clear()
+        this@RequestSingle.client.newCall(Request.Builder().url(this@RequestSingle.msgBoxUrl).build()).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                coroutines.launch (Dispatchers.Main){
+                    Tos("解析失败！",coroutines)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val text = response.body()!!.string()
+               try {
+                   val doc =Jsoup.parse(text)
+                   val lists = doc.select(".message-list ul li")
+                   for (d in lists){
+                       val msgBoxData = MsgBoxList(
+                           msgId = d.select(".content").attr("data-id") ,
+                           msgName = d.select(".content .text").html() ,
+                           msgTime =d.select("time").html()
+                       )
+                       //添加进列表
+                       Log.d("@@msg:", msgBoxData.toString())
+                       this@RequestSingle.MsgBoxData.add(msgBoxData)
+                   }
+                   Log.d("@@进入UI协程:", "---------------")
+                   coroutines.launch (Dispatchers.Main){
+                       Log.d("@@更新列表:", "---------------")
+                       coroutines.msgBoxRecycle.adapter!!.notifyDataSetChanged()
+                   }
+               }catch (e :Exception){
+                   coroutines.launch (Dispatchers.Main){
+                       Tos("解析失败！",coroutines)
+                   }
+               }
+            }
+        })
+    }
+
+
+    fun getMsgInfo(msgId:String,coroutines: BaseActivity) = coroutines.launch {
+
+        val formBody = FormBody.Builder().add("msg_id",msgId).build()
+
+        this@RequestSingle.client.newCall(Request.Builder().url(this@RequestSingle.msgInfoUrl).post(formBody).build()).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                coroutines.launch (Dispatchers.Main){
+                    Tos("解析失败！",coroutines)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val text = response.body()!!.string()
+               Log.d("**json:",text.toString())
+                try {
+                    val res = JSONObject(text)["msgInfo"] as JSONObject
+                    val title = res["title"] as String
+                    val content = res["msg"] as String
+                    val cbody = Jsoup.parse(content).select(".indent").html()
+                    val cauthor = Jsoup.parse(content).select(".alignRight p")[0].html()
+                    val ctime = Jsoup.parse(content).select(".alignRight p")[1].html()
+                    Log.d("** $title  $content","-------------解析完成！**")
+                    coroutines.launch (Dispatchers.Main){
+                        AlertDialog.Builder(coroutines).setIcon(R.drawable.ic_notifications_black_24dp)
+                            .setTitle(title)
+                            .setMessage("$cbody \n\n $cauthor \n\n $ctime").create().show()
+                    }
+                }catch (e:Exception){
+                    coroutines.launch (Dispatchers.Main){
+                        Tos("解析失败！",coroutines)
+                    }
+                }
             }
         })
     }

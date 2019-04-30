@@ -40,3 +40,26 @@ data class WikiWebApi(val wikiName:String,val wikiInterfaceName:String,val wikiD
  */
 
 data class WikiMobileApi(val wikiName: String,val wikiDescribe: String,val wikiUrl: String)
+
+/**
+ * 轻应用详细数据
+ * @param appDesc 简介
+ * @param appOutSideAdd 站外地址
+ * @param appShow 用户可见
+ * @param appSideAdd 站内地址
+ * @param appStatus 审核状态
+ * @param appTestUrl 测试链接
+ * @param appUse 使用场景
+ * @param appID 应用key
+ * @param appPassword 应用秘钥
+ */
+data class AppInfo(val appID:String,val appPassword:String,val appStatus:String,val appDesc:String,val appShow:String,val appUse:String,val appSideAdd:String,val appOutSideAdd:String,val appTestUrl:String)
+
+
+/**
+ * 消息列表
+ * @param msgId ID
+ * @param msgName 标题
+ * @param msgTime 时间戳
+ */
+data class MsgBoxList(val msgName:String,val msgId:String,val msgTime:String)

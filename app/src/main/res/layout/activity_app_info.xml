@@ -36,6 +36,20 @@
                         android:id="@+id/appInfoName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent"
+                          android:text="appID"
+                          android:layout_margin="5dp"
+                          android:padding="5dp"
+                          android:id="@+id/AppInfoID"
+
+                          android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent"
+                          android:id="@+id/AppInfoPassword"
+                          android:layout_margin="5dp"
+                          android:padding="5dp"
+
+                          android:text="App秘钥"
+                          android:layout_height="wrap_content"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -50,6 +64,7 @@
                     android:layout_height="wrap_content">
                 <TextView android:layout_width="match_parent"
                           android:text="审核状态"
+                          android:textStyle="bold"
                           android:layout_margin="5dp"
                           android:padding="5dp"
                           android:textAlignment="center"
@@ -58,9 +73,18 @@
                           android:id="@+id/AppInfoStatus"
                           android:layout_margin="5dp"
                           android:padding="5dp"
-                          android:textAlignment="center"
+
                           android:text="审核过后，可以自行推广..."
                           android:layout_height="wrap_content"/>
+                <Button android:layout_width="wrap_content"
+                        android:textColor="#fff"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:text="提交审核"
+                        android:visibility="gone"
+                        android:background="@drawable/login_btn_bg"
+                        android:id="@+id/AppInfoOnlineBtn"
+                        android:layout_height="wrap_content"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -84,7 +108,7 @@
                 <TextView
                         android:layout_margin="5dp"
                         android:padding="5dp"
-                        android:textAlignment="center"
+
                         android:text="应用简介"
                         android:id="@+id/AppInfoDesc"
                         android:layout_width="match_parent"
@@ -92,15 +116,15 @@
                 <TextView
                         android:layout_margin="5dp"
                         android:padding="5dp"
-                        android:textAlignment="center"
+
                         android:text="用户可见"
-                        android:id="@+id/ApInfoShow"
+                        android:id="@+id/AppInfoShow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:layout_margin="5dp"
                         android:padding="5dp"
-                        android:textAlignment="center"
+
                         android:text="使用场景"
                         android:id="@+id/AppInfoUse"
                         android:layout_width="match_parent"
@@ -123,21 +147,23 @@
                         android:textAlignment="center"
                         android:text="开发信息"
                         android:textStyle="bold"
+                        android:textColor="#8BC34A"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:text="站内地址"
                         android:layout_margin="5dp"
                         android:padding="5dp"
-                        android:textAlignment="center"
-                        android:id="@+id/appInfoSiteAdd"
+
+                        android:id="@+id/AppInfoSiteAdd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:layout_margin="5dp"
                         android:padding="5dp"
-                        android:textAlignment="center"
+
                         android:text="应用地址"
+                        android:textColor="#4CAF50"
                         android:id="@+id/AppInfoOutSiteAdd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -151,20 +177,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 <ImageView android:layout_width="100dp"
+                           android:id="@+id/AppInfoTest"
+                           android:layout_margin="15dp"
                            android:layout_gravity="center_horizontal"
                            android:src="@drawable/ic_more"
                            android:layout_height="100dp"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_navigation_wiki"
-                android:id="@+id/AppInfoEditFab"
-                android:layout_height="wrap_content"/>
-
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

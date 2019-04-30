@@ -4,13 +4,13 @@
         <item
                 android:id="@+id/lightPopDebug"
 
-                android:title="调试"/>
+                android:title="二维码调试"/>
         <item
                 android:id="@+id/lightPopMore"
 
-                android:title="更多"/>
+                android:title="更多信息"/>
         <item
                 android:id="@+id/lightPopEdit"
 
-                android:title="修改"/>
+                android:title="修改应用"/>
 </menu>

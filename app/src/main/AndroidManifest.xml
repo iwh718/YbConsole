@@ -12,6 +12,10 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".activity.MsgBox">
+        </activity>
+        <activity android:name=".activity.TestLightApp">
+        </activity>
         <activity android:name=".activity.AppInfo">
         </activity>
         <activity android:name=".activity.WikiDetail">

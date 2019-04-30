@@ -127,6 +127,14 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    <Button android:layout_width="match_parent"
+            android:background="@drawable/ic_exit"
+            android:layout_margin="30dp"
+            android:padding="10dp"
+            android:text="退出"
+            android:textColor="#fff"
+            android:id="@+id/userExit"
+            android:layout_height="wrap_content"/>
 
         <TextView android:layout_width="match_parent"
                   android:textAlignment="center"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="10dp">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                    android:id="@+id/msgTitle"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:textAlignment="center"
+                    android:text="消息标题"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="wrap_content"
+                    android:text="点击查看"
+                    android:textColor="#fff"
+                    android:id="@+id/msgBtn"
+                    android:textAlignment="center"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:text="消息时间"
+                    android:id="@+id/msgTime"
+                   android:layout_margin="5dp"
+                    android:textAlignment="viewEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

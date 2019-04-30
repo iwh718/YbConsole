@@ -1,6 +1,7 @@
 package iwh.com.simplewen.win0.ybconsole.activity.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import androidx.fragment.app.Fragment
 
 import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
+import iwh.com.simplewen.win0.ybconsole.activity.Login
+import kotlinx.android.synthetic.main.user_fragment.view.*
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -30,7 +33,13 @@ class UserManage: Fragment(){
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.user_fragment,null)
+        return inflater.inflate(R.layout.user_fragment,null).apply {
+            this.userExit.setOnClickListener{
+                val sf = coroutines.getSharedPreferences("loginInfo", Context.MODE_PRIVATE)
+                sf.edit().putString("flag","0").apply()
+                coroutines.startActivity(Intent(coroutines,Login::class.java))
+            }
+        }
     }
 
     override fun onAttach(context: Context) {

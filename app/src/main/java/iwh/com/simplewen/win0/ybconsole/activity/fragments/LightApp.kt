@@ -33,7 +33,7 @@ class LightApp : Fragment() {
 
         val ly = inflater.inflate(R.layout.light_app_fragment, null)
         ly.lightRefresh.isRefreshing = true
-        ly.lightRecycle.adapter = LightRecycleAdapter(RequestSingle.LightDataNoAuth)
+        ly.lightRecycle.adapter = LightRecycleAdapter(RequestSingle.LightDataNoAuth,coroutines)
        // Log.d("@@初始化Adapter","---------------")
         ly.lightRecycle.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         ly.lightRefresh.setOnRefreshListener {

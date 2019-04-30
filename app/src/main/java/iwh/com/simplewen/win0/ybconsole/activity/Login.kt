@@ -27,7 +27,7 @@ class Login : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         val sf1 = getSharedPreferences("loginInfo", Context.MODE_PRIVATE)
-        Tos(sf1.getString("flag","0")!!,this@Login)
+
         if(sf1.getString("flag","0") !== "0"){
             login_progress.visibility = View.VISIBLE
             sign_btn.visibility = View.GONE
