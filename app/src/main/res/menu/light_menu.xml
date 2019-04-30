@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+                android:id="@+id/lightPopDebug"
+
+                android:title="调试"/>
+        <item
+                android:id="@+id/lightPopMore"
+
+                android:title="更多"/>
+        <item
+                android:id="@+id/lightPopEdit"
+
+                android:title="修改"/>
+</menu>

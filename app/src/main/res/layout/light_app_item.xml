@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:elevation="8dp"
+            app:cardCornerRadius="10dp"
+
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+            <LinearLayout
+
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+                <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+
+                        android:id="@+id/lightItemLogo"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/ic_navigation_wiki"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="fitXY"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_weight="4">
+                <TextView android:layout_width="match_parent"
+                          android:layout_margin="10dp"
+                          android:textColor="#000"
+                          android:id="@+id/lightItemName"
+                          android:text="轻应用名称:测试"
+
+                          android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent"
+                          android:id="@+id/lightItemStatus"
+                          android:layout_margin="10dp"
+                          android:textColor="#FF5722"
+                          android:text="轻应用状态：审核中"
+
+                          android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent"
+                          android:id="@+id/lightItemLevel"
+                          android:layout_margin="10dp"
+                          android:text="轻应用权限：开发测试"
+
+                          android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="0dp" android:layout_height="wrap_content">
+                <ImageView
+                        android:layout_margin="10dp"
+                        android:id="@+id/lightMore"
+                        android:src="@drawable/ic_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

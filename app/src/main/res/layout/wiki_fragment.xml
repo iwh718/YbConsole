@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  android:layout_height="match_parent">
+        <TextView android:layout_width="match_parent"
+                  android:text="易班移动端API（JS）"
+                  android:textAlignment="center"
+                  android:padding="5dp"
+                  android:layout_margin="5dp"
+                  android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView android:layout_width="match_parent"
+                                                   android:id="@+id/wikiMobileApiRecycle"
+                                                   android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
+        <TextView android:layout_width="match_parent"
+                  android:text="易班Web通用API"
+                  android:textAlignment="center"
+                  android:padding="5dp"
+                  android:layout_margin="5dp"
+                  android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView android:layout_width="match_parent"
+                                                   android:id="@+id/wikiWebApiRecycle"
+                                                   android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

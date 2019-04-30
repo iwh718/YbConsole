@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical">
+            <ImageView
+                    android:layout_margin="10dp"
+                    android:id="@+id/coderLogo"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="60dp"
+                    android:scaleType="fitXY"
+                    android:layout_height="60dp"/>
+            <TextView android:layout_width="match_parent"
+                      android:id="@+id/coderAlias"
+                      android:text="开发者:xxx"
+                      android:textAlignment="center"
+                      android:layout_margin="10dp"
+                      android:textColor="#000"
+                      android:textStyle="bold"
+
+                      android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <TextView android:layout_width="match_parent"
+                      android:text="联系方式"
+                      android:padding="10dp"
+
+                      android:layout_margin="10dp"
+                      android:textColor="#000"
+                      android:textAlignment="center"
+                      android:layout_height="wrap_content"/>
+            <TextView android:layout_width="match_parent"
+                      android:textAlignment="center"
+                      android:layout_margin="5dp"
+                      android:id="@+id/coderNumber"
+                      android:text="电话：18712xxxx"
+                      android:layout_height="wrap_content"/>
+            <TextView android:layout_width="match_parent"
+                      android:textAlignment="center"
+                      android:layout_margin="5dp"
+                      android:id="@+id/coderEmail"
+                      android:text="邮箱：6300208xx@qq.com"
+                      android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:text="认证信息"
+
+                    android:layout_margin="10dp"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+
+                    android:layout_height="wrap_content"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+                <TextView
+                        android:layout_margin="5dp"
+                        android:textAlignment="center"
+                        android:text="姓名：xxx"
+                        android:id="@+id/coderName"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+                <TextView
+                        android:layout_margin="5dp"
+                        android:textAlignment="center"
+                        android:text="身份：学生"
+                        android:id="@+id/coderType"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                        android:layout_margin="5dp"
+                        android:textAlignment="center"
+                        android:text="学号:xxx"
+                        android:id="@+id/coderId"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+                <TextView
+                        android:layout_margin="5dp"
+                        android:text="学校：xxx"
+                        android:id="@+id/coderSchool"
+                        android:layout_width="0dp"
+                        android:maxEms="13"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+        <TextView android:layout_width="match_parent"
+                  android:textAlignment="center"
+                  android:layout_gravity="bottom"
+                  android:layout_margin="5dp"
+                  android:text="版本：v1.0 BY：IWH"
+                  android:layout_height="wrap_content"/>
+
+
+</LinearLayout>
