@@ -1,7 +1,6 @@
 package iwh.com.simplewen.win0.ybconsole.activity.adapter
 
-import App.YbApp
-import Utils.Tos
+import iwh.com.simplewen.win0.ybconsole.YbApp
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View

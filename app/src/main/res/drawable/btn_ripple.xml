@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="#851E1E"
+       android:shape="rectangle">
+    <item android:state_pressed="true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+               android:shape="rectangle">
+            <!-- 圆角深红色按钮 -->
+            <solid android:color="#9B4242"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="false">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+               android:shape="rectangle">
+            <!-- 圆角红色按钮 -->
+            <solid android:color="#E65656"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+</ripple>

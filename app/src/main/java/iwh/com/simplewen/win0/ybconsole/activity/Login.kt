@@ -62,7 +62,7 @@ class Login : BaseActivity() {
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     //注入js实现登录
-                    val js = "javascript:$('a.login').trigger('click');$('.dialog-content #login_name').val('$accountText');$('.dialog-content #login_pwd').val('$passwordText');$('.userlogin').trigger('click');"
+                    val js = "javascript:$('a.login').trigger('click');$('.dialog-content #login_name').val('18712505420');$('.dialog-content #login_pwd').val('ldd630020826');$('.userlogin').trigger('click');"
                     indexWebView.loadUrl(js)
                     //获取Cookie
                     val cookieManager = CookieManager.getInstance()

@@ -53,7 +53,7 @@ data class WikiMobileApi(val wikiName: String,val wikiDescribe: String,val wikiU
  * @param appID 应用key
  * @param appPassword 应用秘钥
  */
-data class AppInfo(val appID:String,val appPassword:String,val appStatus:String,val appDesc:String,val appShow:String,val appUse:String,val appSideAdd:String,val appOutSideAdd:String,val appTestUrl:String)
+data class AppInfo(val appName:String,val lLogoUr:String,val sLogoUrl:String,val appID:String,val appPassword:String,val appStatus:String,val appDesc:String,val appShow:String,val appUse:String,val appSideAdd:String,val appOutSideAdd:String,val appTestUrl:String)
 
 
 /**

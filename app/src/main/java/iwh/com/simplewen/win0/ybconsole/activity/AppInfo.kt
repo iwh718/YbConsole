@@ -2,7 +2,6 @@ package iwh.com.simplewen.win0.ybconsole.activity
 
 import Utils.Tos
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -32,6 +31,7 @@ class AppInfo : BaseActivity() {
                 startActivity(this)
             })
         }
+        //调试Url
         AppInfoSiteAdd.setOnClickListener {
             AlertDialog.Builder(this@AppInfo).setTitle("注意！")
                 .setMessage("站内应用请使用易班查看！")
@@ -49,6 +49,17 @@ class AppInfo : BaseActivity() {
                 .setNegativeButton("取消",null)
                 .create().show()
         }
+        //提交审核
+        AppInfoOnlineBtn.setOnClickListener{
+            AlertDialog.Builder(this@AppInfo)
+                .setMessage("审核大概需要2-3天，留心查看，消息！")
+                .setPositiveButton("确认"){
+                    _,_ ->
+                    RequestSingle.appManage(intent.getStringExtra("appId"),this@AppInfo,2)
+                }
+                .setNegativeButton("取消",null)
+                .create().show()
+        }
 
     }
 
@@ -59,7 +70,25 @@ class AppInfo : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
-            R.id.lightMoreChart -> Tos("查看图表。。",this@AppInfo)
+            R.id.lightMoreDelete -> {
+                AlertDialog.Builder(this@AppInfo).setTitle("请注意!")
+                    .setMessage("删除后，轻应用的key与Id将失效，统计数据将会清除！")
+                    .setPositiveButton("确定"){
+                        _,_ ->
+                        RequestSingle.appManage(intent.getStringExtra("appId"),this@AppInfo)
+                    }
+                    .setNegativeButton("取消",null)
+                    .create().show()
+            }
+            R.id.lightMoreDown ->AlertDialog.Builder(this@AppInfo).setTitle("注意！")
+                .setMessage("应用下架后，需要重新上架审核！")
+                .setPositiveButton("确定"){
+                    _,_ ->
+                    Tos("下架应用！",this@AppInfo)
+                    RequestSingle.appManage(intent.getStringExtra("appId"),this@AppInfo,1)
+                }
+                .setNegativeButton("取消",null)
+                .create().show()
         }
         return super.onOptionsItemSelected(item)
     }

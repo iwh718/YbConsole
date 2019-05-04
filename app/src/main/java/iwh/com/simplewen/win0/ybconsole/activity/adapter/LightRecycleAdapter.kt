@@ -1,7 +1,6 @@
 package iwh.com.simplewen.win0.ybconsole.activity.adapter
 
-import App.YbApp
-import Utils.Tos
+import iwh.com.simplewen.win0.ybconsole.YbApp
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +10,13 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 
 import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.AppInfo
 import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
+import iwh.com.simplewen.win0.ybconsole.activity.EditApp
 import iwh.com.simplewen.win0.ybconsole.activity.modal.LightItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import work.RequestSingle
@@ -74,6 +73,16 @@ class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>,private val
                             R.id.lightPopDebug->{
                               //  Tos(lightApp[position].itemUrl,YbApp.getContext())
                                 RequestSingle.getDebugImg(coroutines,lightApp[position].itemUrl)
+                                true
+                            }
+                            //修改
+                            R.id.lightPopEdit -> {
+                                YbApp.getContext().startActivity(Intent(YbApp.getContext(),EditApp::class.java).apply{
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                    putExtra("appId",lightApp[position].itemUrl)
+
+
+                                })
                                 true
                             }
                             else-> true

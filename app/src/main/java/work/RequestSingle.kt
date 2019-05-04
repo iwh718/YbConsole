@@ -3,15 +3,21 @@ package work
 
 import Utils.Tos
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
+import iwh.com.simplewen.win0.ybconsole.activity.MainActivity
 import iwh.com.simplewen.win0.ybconsole.activity.modal.*
 import kotlinx.android.synthetic.main.activity_app_info.*
+import kotlinx.android.synthetic.main.activity_edit_app.*
 import kotlinx.android.synthetic.main.activity_msg_box.*
 import kotlinx.android.synthetic.main.debug_layout.*
 import kotlinx.android.synthetic.main.debug_layout.view.*
@@ -37,7 +43,7 @@ import kotlin.collections.ArrayList
 object RequestSingle {
 
     var cookieStore: HashMap<String, MutableList<Cookie>> = HashMap()
-    private val client = OkHttpClient.Builder().cookieJar(object : CookieJar {
+     val client = OkHttpClient.Builder().cookieJar(object : CookieJar {
         override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
             return this@RequestSingle.cookieStore[url.host()] ?: Collections.emptyList()
         }
@@ -52,6 +58,7 @@ object RequestSingle {
     private const val lightBaseUrl = "https://o.yiban.cn/manage/appinfo?appid="//应用详情地址
     private const val msgBoxUrl = "https://o.yiban.cn/global/msgbox"//消息列表
     private const val msgInfoUrl = "https://o.yiban.cn/ajax/readmsg"//消息内容
+    private const val modifyUrl = "https://o.yiban.cn/ajax/modify"
     private const val debugUrl = "https://o.yiban.cn/page/goto?act=iapp_debug&appid="
     val LightDataNoAuth = ArrayList<LightItem>()//未认证
     val LightDataAuth = ArrayList<LightItem>()//认证应用
@@ -297,7 +304,7 @@ object RequestSingle {
 
 
 
-    fun getAppInfo(appId:String,coroutines: BaseActivity) = coroutines.launch {
+    fun getAppInfo(appId:String,coroutines: BaseActivity,corId:Int = 0) = coroutines.launch {
         this@RequestSingle.AppInfoData.clear()
         this@RequestSingle.client.newCall(Request.Builder().url("${this@RequestSingle.lightBaseUrl}$appId").build()).enqueue(object :Callback{
             override fun onFailure(call: Call, e: IOException) {
@@ -324,28 +331,79 @@ object RequestSingle {
                         appSideAdd = lisCount[2].select("ul li")[0].select(".content").html(),
                         appStatus = if(isOnline)checkStatusEle.html() else checkStatusEle.select("a").html(),
                         appTestUrl = lisCount[3].select("ul li")[0].select(".content img").attr("src"),
-                        appUse =  lisCount[1].select("ul li")[4].select(".content").html()
+                        appUse =  lisCount[1].select("ul li")[4].select(".content").html(),
+                        sLogoUrl =  lisCount[1].select("ul li")[5].select("img")[1].attr("src"),
+                        lLogoUr =  lisCount[1].select("ul li")[5].select("img")[0].attr("src"),
+                        appName = lisCount[1].select("ul li")[0].select(".content")[0].html()
 
                     )
                     this@RequestSingle.AppInfoData.add(appInfoData)
                  //   Log.d("@@AppInfo:",appInfoData.toString())
                     coroutines.launch(Dispatchers.Main) {
-                        with(coroutines){
-                            AppInfoStatus.text = "审核状态：${appInfoData.appStatus}"
-                            AppInfoDesc.text = "简介:${appInfoData.appDesc}"
-                            AppInfoOutSiteAdd.text ="站外地址:${ appInfoData.appOutSideAdd}"
-                            AppInfoSiteAdd.text = "站内地址:${appInfoData.appSideAdd}"
-                            AppInfoUse.text = "使用场景:${appInfoData.appUse}"
-                            AppInfoShow.text = "用户可见:${appInfoData.appShow}"
-                            AppInfoID.text = appInfoData.appID
-                            AppInfoOnlineBtn.visibility = if(isOnline){
-                                View.GONE
-                            }else {
-                                View.VISIBLE
-                            }
-                            AppInfoPassword.text = appInfoData.appPassword
-                            Glide.with(coroutines).load(appInfoData.appTestUrl).into(AppInfoTest)
-                        }
+                       when(corId){
+                           0 -> {
+                               with(coroutines){
+                                   AppInfoStatus.text = "审核状态：${appInfoData.appStatus}"
+                                   AppInfoDesc.text = "简介:${appInfoData.appDesc}"
+                                   AppInfoOutSiteAdd.text ="站外地址:${ appInfoData.appOutSideAdd}"
+                                   AppInfoSiteAdd.text = "站内地址:${appInfoData.appSideAdd}"
+                                   AppInfoUse.text = "使用场景:${appInfoData.appUse}"
+                                   AppInfoShow.text = "用户可见:${appInfoData.appShow}"
+                                   AppInfoID.text = appInfoData.appID
+                                   AppInfoOnlineBtn.visibility = if(isOnline){
+                                       View.GONE
+                                   }else {
+                                       View.VISIBLE
+                                   }
+                                   AppInfoPassword.text = appInfoData.appPassword
+                                   Glide.with(coroutines).load(appInfoData.appTestUrl).into(AppInfoTest)
+                               }
+                           }
+                           1 ->{
+                                with(coroutines){
+
+                                  //可见度
+                                    when{
+                                        //开发者同校
+                                        appInfoData.appShow.matches(".*?\\u4ec5\\u4e0e\\u5f00\\u53d1\\u8005.*?".toRegex()) ->{
+                                        modifyShow.setSelection(2)
+
+
+                                        }
+                                        //校方认证
+                                        appInfoData.appShow.matches(".*?\\u4ec5\\u6821\\u65b9\\u8ba4\\u8bc1.*?".toRegex())->{
+                                            modifyShow.setSelection(1)
+
+                                        }
+                                        //所有用户
+                                        else->{
+                                            modifyShow.setSelection(0)
+                                        }
+
+                                    }
+                                    //场景
+                                    when{
+                                        //仅易班客户端
+                                        appInfoData.appUse.matches(".*?\\u4ec5\\u6613\\u73ed.*?".toRegex())->{
+                                            modifyUse.setSelection(0)
+
+                                        }
+                                        //兼容模式Pc/客户端
+                                        appInfoData.appUse.matches(".*?\\u517c\\u5bb9.*?".toRegex())->{
+                                            modifyUse.setSelection(1)
+
+                                        }
+
+                                    }
+
+                                    modifyDesc.setText(appInfoData.appDesc)
+                                    modifyName.setText(appInfoData.appName)
+                                    modifySideAdd.setText(appInfoData.appOutSideAdd)
+                                    Glide.with(coroutines).load(appInfoData.sLogoUrl).apply(RequestOptions.bitmapTransform(CircleCrop())).into(editSLogo)
+                                    Glide.with(coroutines).load(appInfoData.lLogoUr).apply(RequestOptions.bitmapTransform(CircleCrop())).into(editLLogo)
+                                }
+                           }
+                       }
                     }
                 }catch (e:Exception){
                     coroutines.launch (Dispatchers.Main){
@@ -461,6 +519,128 @@ object RequestSingle {
             }
         })
     }
+
+
+
+    /**
+     * 删除应用 && 下架应用 && 提交审核
+     * url：https://o.yiban.cn/ajax/delapp
+     */
+    fun appManage(appId:String, coroutines: BaseActivity, type:Int = 0) = coroutines.launch{
+        var url = "https://o.yiban.cn/ajax/delapp"
+        var tips = "删除"
+        when(type){
+            0 -> {
+                url = "https://o.yiban.cn/ajax/delapp"
+                tips = "删除"
+            }
+            1 -> {
+                url = "https://o.yiban.cn/ajax/downapp"
+                tips = "下架"
+            }
+            2 ->{
+                url = "https://o.yiban.cn/ajax/appcheck"
+                tips  = "提交审核"
+            }
+        }
+
+            this@RequestSingle.client.newCall(Request.Builder().url(url).post(FormBody.Builder().add("appid",appId).add("type","audit").build()).build()).enqueue(object :Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    coroutines.launch {
+                        Tos("$tips 失败:网络错误！",coroutines)
+                    }
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val text = response.body()!!.string()
+                    Log.d("@@$tips :",text)
+                    try {
+                        if(text.matches(".*?s200.*?".toRegex())){
+                            coroutines.launch (Dispatchers.Main){
+                                Tos("$tips 完成！",coroutines)
+                                coroutines.startActivity(Intent(coroutines,MainActivity::class.java))
+                                coroutines.finish()
+                            }
+                        }else{
+                            coroutines.launch (Dispatchers.Main){
+                                Tos("$tips 失败:${JSONObject(text).get("msgCN") as String}",coroutines)
+                            }
+                        }
+                    }catch (e:Exception){
+                        coroutines.launch(Dispatchers.Main) {
+                            Tos("$tips ：解析错误！",coroutines)
+                        }
+                    }
+                }
+            })
+    }
+
+
+
+    /**
+     * 添加轻应用
+     */
+    fun addApp(){
+
+    }
+
+    /**
+     * 查看数据
+     */
+    fun showCharts(){
+
+    }
+
+    /**
+     * 获取修改应用的基本信息
+     */
+    fun submitModify(appId:String,bundle: Bundle,coroutines: BaseActivity) = coroutines.launch {
+
+        Log.d("@@modifyReceive:",bundle.toString())
+        val formBody = FormBody.Builder()
+            .add("appid",bundle.getString("mId")!!)
+            .add("app_name",bundle.getString("mName")!!)
+            .add("app_intro",bundle.getString("mDesc")!!)
+            .add("app_slogo",bundle.getString("msLogoUrl")!!)
+            .add("app_blogo",bundle.getString("mlLogoUrl")!!)
+            .add("app_url_rd","")
+            .add("app_url_th",bundle.getString("mSideAdd")!!)
+            .add("app_type","iapp")
+            .add("app_label_id","工具")
+            .add("app_viewlevel",bundle.getString("mShowLevel")!!)
+            .add("app_canweb",bundle.getString("mUseLevel")!!)
+            .add("app_pro","").build()
+        this@RequestSingle.client.newCall(Request.Builder().url(this@RequestSingle.modifyUrl).post(formBody).build()).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                coroutines.launch (Dispatchers.Main){
+                    Tos("更新数据：网络错误！！",coroutines)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val text = response.body()!!.string()
+                val doc =Jsoup.parse(text)
+                Log.d("@@resModify:",doc.toString())
+                val res = doc.select("body").html().trim()
+                coroutines.launch (Dispatchers.Main){
+                    if(res == "s200"){
+                        Tos("修改完成！",coroutines)
+                    }else{
+                        val json = JSONObject(res).get("msgCN") as String
+
+                        Tos("修改失败:$json",coroutines)
+                    }
+                }
+
+
+            }
+        })
+    }
+
+
+
+
+
 
 
 }
