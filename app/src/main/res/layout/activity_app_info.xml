@@ -167,6 +167,26 @@
                         android:id="@+id/AppInfoOutSiteAdd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent"
+                          android:text="基本数据"
+                          android:textStyle="bold"
+                          android:textAlignment="center"
+                          android:layout_height="wrap_content"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <TextView android:layout_width="0dp" android:layout_margin="5dp" android:textAlignment="center" android:textColor="#03A9F4" android:layout_weight="1" android:text="新增：" android:id="@+id/appInfoUserAdd" android:layout_height="wrap_content"/>
+                    <TextView android:layout_width="0dp" android:layout_margin="5dp"  android:textAlignment="center"  android:layout_weight="1" android:text="流失：" android:id="@+id/appInfoUserLoss" android:layout_height="wrap_content"/>
+                    <TextView android:layout_width="0dp" android:layout_margin="5dp"  android:textAlignment="center"  android:layout_weight="1" android:text="回头：" android:id="@+id/appInfoUserBack" android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <TextView android:layout_width="0dp" android:layout_margin="5dp" android:textAlignment="center" android:layout_weight="1" android:text="调用成功：" android:id="@+id/appInfoApiSuccess"  android:layout_height="wrap_content"/>
+                    <TextView android:layout_width="0dp" android:layout_margin="5dp" android:textAlignment="center" android:textColor="#F44336" android:layout_weight="1" android:text="调用失败：" android:id="@+id/appInfoApiFailed" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
                 <TextView
                         android:layout_margin="5dp"
                         android:padding="5dp"
@@ -182,6 +202,7 @@
                            android:layout_gravity="center_horizontal"
                            android:src="@drawable/ic_more"
                            android:layout_height="100dp"/>
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

@@ -1,6 +1,7 @@
 package iwh.com.simplewen.win0.ybconsole.activity
 
 import Utils.Tos
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.UserManager
@@ -86,7 +87,12 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
-            R.id.indexMenuAbout -> Tos("关于。。",this@MainActivity)
+            R.id.indexMenuAbout -> {
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("关于此应用")
+                    .setMessage("1.应用为易班轻应用开发者使用，其它暂不支持。\n\n 2.反馈交流群：778399961（搜索添加）\n\n 3.如果你看到这个页面，应该是开发者了，自行探索吧。\n\n Author：IWH | 2019.05.5")
+                    .create().show()
+            }
             R.id.indexMenuNotify -> startActivity(Intent(this@MainActivity,MsgBox::class.java))
         }
         return super.onOptionsItemSelected(item)

@@ -2,6 +2,7 @@ package work
 
 
 import Utils.Tos
+import Utils.showNetError
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +17,7 @@ import iwh.com.simplewen.win0.ybconsole.R
 import iwh.com.simplewen.win0.ybconsole.activity.BaseActivity
 import iwh.com.simplewen.win0.ybconsole.activity.MainActivity
 import iwh.com.simplewen.win0.ybconsole.activity.modal.*
+import kotlinx.android.synthetic.main.activity_add_light_app.*
 import kotlinx.android.synthetic.main.activity_app_info.*
 import kotlinx.android.synthetic.main.activity_edit_app.*
 import kotlinx.android.synthetic.main.activity_msg_box.*
@@ -26,6 +28,7 @@ import kotlinx.android.synthetic.main.user_fragment.*
 import kotlinx.android.synthetic.main.wiki_fragment.*
 import kotlinx.coroutines.*
 import okhttp3.*
+import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
@@ -67,6 +70,8 @@ object RequestSingle {
     val UserInfoData = ArrayList<UserInfo>()//开发者信息
     val AppInfoData = ArrayList<AppInfo>()//轻应用详细数据
     val MsgBoxData = ArrayList<MsgBoxList>()//消息列表
+    val ApiData = ArrayList<Map<String,Any>>()
+    var runFlag = 0
 
 
     /**
@@ -226,7 +231,7 @@ object RequestSingle {
                     tables.removeAt(0)
                     tables.removeAt(0)
                     tables.removeAt(tables.size-1)//去除移动端列表
-                    Log.d("@@mobile:",mobileData.html())
+                   // Log.d("@@mobile:",mobileData.html())
                     try {
                         //开始匹配web接口
                         for (i in tables.indices) {
@@ -339,9 +344,13 @@ object RequestSingle {
                     )
                     this@RequestSingle.AppInfoData.add(appInfoData)
                  //   Log.d("@@AppInfo:",appInfoData.toString())
+
+
                     coroutines.launch(Dispatchers.Main) {
                        when(corId){
                            0 -> {
+                               this@RequestSingle.showCharts(appId,coroutines = coroutines)
+                               this@RequestSingle.showCharts(appId,"apistat",coroutines)
                                with(coroutines){
                                    AppInfoStatus.text = "审核状态：${appInfoData.appStatus}"
                                    AppInfoDesc.text = "简介:${appInfoData.appDesc}"
@@ -403,9 +412,11 @@ object RequestSingle {
                                     Glide.with(coroutines).load(appInfoData.lLogoUr).apply(RequestOptions.bitmapTransform(CircleCrop())).into(editLLogo)
                                 }
                            }
+
                        }
                     }
                 }catch (e:Exception){
+                    Log.d("@@appInfoError:",e.stackTrace.toString())
                     coroutines.launch (Dispatchers.Main){
                         Tos("解析失败！",coroutines)
                     }
@@ -483,7 +494,10 @@ object RequestSingle {
         })
     }
 
-
+    /**
+     *
+     * 获取站内消息
+     */
     fun getMsgInfo(msgId:String,coroutines: BaseActivity) = coroutines.launch {
 
         val formBody = FormBody.Builder().add("msg_id",msgId).build()
@@ -579,16 +593,173 @@ object RequestSingle {
 
     /**
      * 添加轻应用
+     * url1:https://o.yiban.cn/ajax/addinfo
+     * url2:https://o.yiban.cn/ajax/addline
      */
-    fun addApp(){
+    fun addApp(bundle:Bundle,coroutines: BaseActivity) = coroutines.launch{
+        Log.d("@@AddReceive:",bundle.toString())
+        val inSideAddUrl = bundle.get("mUrl") as String
+        val formBody = FormBody.Builder()
+            .add("app_name",bundle.getString("mName")!!)
+            .add("app_intro",bundle.getString("mDesc")!!)
+            .add("app_slogo",bundle.getString("msLogoUrl")!!)
+            .add("app_blogo",bundle.getString("mlLogoUrl")!!)
+            .add("app_type","iapp")
+            .add("app_label_id","工具")
+            .add("app_viewlevel",bundle.getString("mShowLevel")!!)
+            .add("app_canweb","")
+            .build()
+        this@RequestSingle.client.newCall(Request.Builder().url("https://o.yiban.cn/ajax/addinfo").post(formBody).build()).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                coroutines.launch(Dispatchers.Main){
+                    Tos("添加失败：网络错误！",coroutines)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+               try {
+                   val res = response.body()!!.string()
+                   //如果返回appId
+                   if(res.length < 10){
+                       Log.d("@@addResult,Ok:",res)
+                       coroutines.launch {
+
+                           Log.d("@@mUrl:","+++++++++++++ $inSideAddUrl")
+                           this@RequestSingle.continueAdd(res.trim(),inSideAddUrl,coroutines)
+                       }
+                   }else{
+                       try {
+                           val resCode = JSONObject(res).get("msgCN") as String
+                           coroutines.launch {
+                               Tos(resCode,coroutines)
+                               coroutines.upPro.visibility = View.GONE
+                               coroutines.cardTop.visibility = View.VISIBLE
+                               coroutines.addNextBtn.visibility = View.VISIBLE
+                           }
+
+                       }catch (e:Exception){
+                           Log.d("JSON解析失败！","-------------${e.stackTrace}")
+                       }
+                   }
+                   Log.d("@@addResult:",res)
+               }catch (e:Exception){
+                   Log.d("@@addError:",e.stackTrace.toString())
+               }
+
+            }
+        })
 
     }
 
     /**
-     * 查看数据
+     * 添加第二步
+     * @param mUrl 站外地址
+     * url:https://o.yiban.cn/ajax/addline
      */
-    fun showCharts(){
+    private fun continueAdd(appId:String,mUrl:String,coroutines: BaseActivity) = coroutines.launch {
+        val formBody = FormBody.Builder()
+            .add("appid",appId)
+            .add("app_url","")
+            .add("app_url_rd","")
+            .add("app_url_th",mUrl)
+            .add("app_type","iapp")
+            .build()
+        this@RequestSingle.client.newCall(Request.Builder().url("https://o.yiban.cn/ajax/addline").post(formBody).build()).enqueue(object:Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                showNetError(coroutines,"添加")
+            }
 
+            override fun onResponse(call: Call, response: Response) {
+                val rs = response.body()!!.string()
+                Log.d("@@addOver:",rs)
+                if(rs.trim() != "s200"){
+                    try {
+                        coroutines.launch (Dispatchers.Main){
+                            Tos("${JSONObject(rs).get("msgCN")}",coroutines)
+                            coroutines.upPro.visibility = View.GONE
+                            coroutines.cardTop.visibility = View.VISIBLE
+                            coroutines.addNextBtn.visibility = View.VISIBLE
+
+                        }
+
+                    }catch (e:Exception){
+
+                        Log.d("@@addOver:Error",e.stackTrace.toString())
+
+                    }
+                }else{
+                    coroutines.launch(Dispatchers.Main) {
+                        Tos("创建完成！",coroutines)
+                        coroutines.upPro.visibility = View.GONE
+                        coroutines.addLightSubmit.show()
+                    }
+                }
+
+            }
+        })
+    }
+
+    /**
+     * 查看数据
+     * @param type 数据类型
+     * @param appId AppId
+     * @param coroutines 协程上下文
+     * user url:https://o.yiban.cn/manage/oauthstat?appid=用户数据
+     * api url = https://o.yiban.cn/manage/apistat?appid=捷库调用
+     */
+    fun showCharts(appId:String,type:String = "oauthstat",coroutines: BaseActivity) = coroutines.launch{
+
+        if(this@RequestSingle.runFlag > 1){
+            this@RequestSingle.ApiData.clear()
+            this@RequestSingle.runFlag = 0
+        }
+        this@RequestSingle.client.newCall(Request.Builder().url("https://o.yiban.cn/manage/$type?appid=$appId").build()).enqueue(object:Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                showNetError(coroutines,"获取数据")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val rs = response.body()!!.string()
+                val docScript = Jsoup.parse(rs).select("body script")[1]
+
+
+               try {
+                   val m = docScript.html().split(";".toRegex())
+                   val data = m[0].replace("var","").replace("pieData","").replace("=","")
+
+                   if(type == "oauthstat"){
+                       for (i in 0 until JSONArray(data).length()-1){
+                           val arr = JSONArray(data)[i] as JSONObject
+                           this@RequestSingle.ApiData.add(mapOf(arr.get("name") as String to arr.get("value")))
+                           // Log.d("@@oauthJson:",arr.toString())
+                       }
+                   }else{
+                       for (i in 0 until JSONArray(data).length()){
+                           val arr = JSONArray(data)[i] as JSONObject
+                           this@RequestSingle.ApiData.add(mapOf(arr.get("name") as String to arr.get("value")))
+                           // Log.d("@@apiJson:",arr.toString())
+                       }
+                   }
+                   Log.d("@@oauthJson:",this@RequestSingle.ApiData.toString())
+                   Log.d("@@runFlag:",this@RequestSingle.runFlag.toString())
+                   if(this@RequestSingle.runFlag == 1){
+                       coroutines.launch{(Dispatchers.Main)
+                           coroutines.appInfoUserAdd.text = "新增：${this@RequestSingle.ApiData[0]["新增率"]}"
+                           coroutines.appInfoUserLoss.text = "流失：${this@RequestSingle.ApiData[1]["流失率"]}"
+                           coroutines.appInfoUserBack.text = "回头：${this@RequestSingle.ApiData[2]["回头率"]}"
+                           coroutines.appInfoApiSuccess.text = "API成功：${this@RequestSingle.ApiData[3]["成功次数"]}"
+                           coroutines.appInfoApiFailed.text = "API失败：${this@RequestSingle.ApiData[4]["出错次数"]}"
+                       }
+                   }
+               }catch (e:Exception){
+                Log.d("@@error:json解析错误！","-------------------")
+               }finally {
+                   this@RequestSingle.runFlag += 1
+               }
+
+
+            }
+        })
     }
 
     /**

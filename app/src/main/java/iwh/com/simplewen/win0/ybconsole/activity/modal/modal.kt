@@ -63,3 +63,8 @@ data class AppInfo(val appName:String,val lLogoUr:String,val sLogoUrl:String,val
  * @param msgTime 时间戳
  */
 data class MsgBoxList(val msgName:String,val msgId:String,val msgTime:String)
+
+/**
+ *接口数据
+ */
+data class apiData(val userAdd:String,val userLoss:String,val userBack:String,val apiSuccess:String,val apiFaile:String)

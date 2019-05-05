@@ -54,6 +54,7 @@ class EditApp :BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_app)
+
         modifyUse.adapter = ArrayAdapter(this@EditApp, R.layout.support_simple_spinner_dropdown_item, mUseArr)
         modifyShow.adapter = ArrayAdapter(this@EditApp, R.layout.support_simple_spinner_dropdown_item, mShowArr)
 
