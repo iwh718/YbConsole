@@ -14,8 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import android.webkit.CookieManager
 import iwh.com.simplewen.win0.ybconsole.R
 import okhttp3.Cookie
-import okhttp3.Request
-import org.mozilla.javascript.tools.jsc.Main
+
 import work.RequestSingle
 
 @ExperimentalCoroutinesApi
@@ -66,9 +65,9 @@ class Login : BaseActivity() {
                     indexWebView.loadUrl(js)
                     //获取Cookie
                     val cookieManager = CookieManager.getInstance()
-                    Log.d("@@token111:",cookieManager.getCookie(url).toString())
+                 //   Log.d("@@token111:",cookieManager.getCookie(url).toString())
                     val token =  cookieManager.getCookie(url).split(";")
-                    Log.d("@@token:",token.toString())
+                  //  Log.d("@@token:",token.toString())
                     try {
                         if (token[1].matches(Regex(".*?yiban_user_token.*?"))) {
                             Tos("登录成功！", this@Login)
@@ -100,7 +99,7 @@ class Login : BaseActivity() {
                             sign_btn.visibility = View.VISIBLE
                         }
                     }catch (e:Exception){
-                        Tos("登录失败:$e", this@Login)
+                        Tos("登录失败", this@Login)
                         account.visibility = View.VISIBLE
                         password.visibility = View.VISIBLE
                         login_progress.visibility = View.GONE

@@ -49,6 +49,8 @@ class LightRecycleAdapter(private val lightApp: ArrayList<LightItem>,private val
                 putExtra("appId",lightApp[position].itemUrl)
                 putExtra("appLogoUrl",lightApp[position].itemLogoUrl)
                 putExtra("appName",lightApp[position].itemName)
+                flags  = Intent.FLAG_ACTIVITY_NEW_TASK
+
             })
         }
         holder.itemLevel.text = "权限等级：${lightApp[position].itemLevel}"

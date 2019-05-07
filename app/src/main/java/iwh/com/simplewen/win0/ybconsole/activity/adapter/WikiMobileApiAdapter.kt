@@ -1,6 +1,7 @@
 package iwh.com.simplewen.win0.ybconsole.activity.adapter
 
 
+import android.app.Activity
 import iwh.com.simplewen.win0.ybconsole.YbApp
 import android.content.Intent
 import android.view.LayoutInflater
@@ -33,11 +34,9 @@ class WikiMobileApiAdapter(private val wikiMobileData:ArrayList<WikiMobileApi>):
             val intent = Intent(YbApp.getContext(),WikiDetail::class.java)
             intent.putExtra("apiName",wikiMobileData[position].wikiName)
             intent.putExtra("apiUrl",wikiMobileData[position].wikiUrl)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             YbApp.getContext().startActivity(intent)
-
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WikiMobileHolder {

@@ -80,6 +80,7 @@ object RequestSingle {
     fun getManage(coroutines: BaseActivity, sort: Int = 2) = coroutines.launch Manage@{
         this@RequestSingle.LightDataAuth.clear()
         this@RequestSingle.LightDataNoAuth.clear()
+        //处理后期扩展
         val nowUrl = when (sort) {
             0 -> this@RequestSingle.manageUrl
             else -> "${this@RequestSingle.manageUrl}?item=2"
@@ -133,7 +134,7 @@ object RequestSingle {
                                 )
                                 this@RequestSingle.LightDataAuth.add(lightAppData)
                             }
-                            Log.d("@@authData:", this@RequestSingle.LightDataAuth.toString())
+                         //   Log.d("@@authData:", this@RequestSingle.LightDataAuth.toString())
                         }
 
                     } catch (e: Exception) {
@@ -271,7 +272,7 @@ object RequestSingle {
                         coroutines.launch (Dispatchers.Main){
                             Tos("web端接口获取失败！",coroutines)
                         }
-                        Log.d("@@error:",e.stackTrace.toString())
+                      //  Log.d("@@error:",e.stackTrace.toString())
                     }finally {
                       //  Log.d("@@wkiApiSize:",this@RequestSingle.wikiWebApiData.size.toString())
 
@@ -287,10 +288,10 @@ object RequestSingle {
                           )
                           this@RequestSingle.wikiMobileData.add(wikiMobileData)
                         //  Log.d("@@wikiMobile:",wikiMobileData.toString())
-                          Log.d("@@wikiMobleSize:",this@RequestSingle.wikiMobileData.size.toString())
+                        //  Log.d("@@wikiMobleSize:",this@RequestSingle.wikiMobileData.size.toString())
                       }
                   }catch (e:Exception){
-                      Log.d("@@errorMobile:",e.stackTrace.toString())
+                    //  Log.d("@@errorMobile:",e.stackTrace.toString())
                       coroutines.launch (Dispatchers.Main){
                           Tos("移动端接口获取失败！",coroutines)
                       }
@@ -416,7 +417,7 @@ object RequestSingle {
                        }
                     }
                 }catch (e:Exception){
-                    Log.d("@@appInfoError:",e.stackTrace.toString())
+                   // Log.d("@@appInfoError:",e.stackTrace.toString())
                     coroutines.launch (Dispatchers.Main){
                         Tos("解析失败！",coroutines)
                     }
@@ -477,12 +478,12 @@ object RequestSingle {
                            msgTime =d.select("time").html()
                        )
                        //添加进列表
-                       Log.d("@@msg:", msgBoxData.toString())
+                     //  Log.d("@@msg:", msgBoxData.toString())
                        this@RequestSingle.MsgBoxData.add(msgBoxData)
                    }
-                   Log.d("@@进入UI协程:", "---------------")
+                  // Log.d("@@进入UI协程:", "---------------")
                    coroutines.launch (Dispatchers.Main){
-                       Log.d("@@更新列表:", "---------------")
+                      // Log.d("@@更新列表:", "---------------")
                        coroutines.msgBoxRecycle.adapter!!.notifyDataSetChanged()
                    }
                }catch (e :Exception){
@@ -511,7 +512,7 @@ object RequestSingle {
 
             override fun onResponse(call: Call, response: Response) {
                 val text = response.body()!!.string()
-               Log.d("**json:",text.toString())
+              // Log.d("**json:",text.toString())
                 try {
                     val res = JSONObject(text)["msgInfo"] as JSONObject
                     val title = res["title"] as String
@@ -519,7 +520,7 @@ object RequestSingle {
                     val cbody = Jsoup.parse(content).select(".indent").html()
                     val cauthor = Jsoup.parse(content).select(".alignRight p")[0].html()
                     val ctime = Jsoup.parse(content).select(".alignRight p")[1].html()
-                    Log.d("** $title  $content","-------------解析完成！**")
+                  //  Log.d("** $title  $content","-------------解析完成！**")
                     coroutines.launch (Dispatchers.Main){
                         AlertDialog.Builder(coroutines).setIcon(R.drawable.ic_notifications_black_24dp)
                             .setTitle(title)
@@ -567,7 +568,7 @@ object RequestSingle {
 
                 override fun onResponse(call: Call, response: Response) {
                     val text = response.body()!!.string()
-                    Log.d("@@$tips :",text)
+                   // Log.d("@@$tips :",text)
                     try {
                         if(text.matches(".*?s200.*?".toRegex())){
                             coroutines.launch (Dispatchers.Main){
@@ -597,7 +598,7 @@ object RequestSingle {
      * url2:https://o.yiban.cn/ajax/addline
      */
     fun addApp(bundle:Bundle,coroutines: BaseActivity) = coroutines.launch{
-        Log.d("@@AddReceive:",bundle.toString())
+       // Log.d("@@AddReceive:",bundle.toString())
         val inSideAddUrl = bundle.get("mUrl") as String
         val formBody = FormBody.Builder()
             .add("app_name",bundle.getString("mName")!!)
@@ -621,10 +622,10 @@ object RequestSingle {
                    val res = response.body()!!.string()
                    //如果返回appId
                    if(res.length < 10){
-                       Log.d("@@addResult,Ok:",res)
+                     //  Log.d("@@addResult,Ok:",res)
                        coroutines.launch {
 
-                           Log.d("@@mUrl:","+++++++++++++ $inSideAddUrl")
+                         //  Log.d("@@mUrl:","+++++++++++++ $inSideAddUrl")
                            this@RequestSingle.continueAdd(res.trim(),inSideAddUrl,coroutines)
                        }
                    }else{
@@ -638,12 +639,12 @@ object RequestSingle {
                            }
 
                        }catch (e:Exception){
-                           Log.d("JSON解析失败！","-------------${e.stackTrace}")
+                          // Log.d("JSON解析失败！","-------------${e.stackTrace}")
                        }
                    }
-                   Log.d("@@addResult:",res)
+                 //  Log.d("@@addResult:",res)
                }catch (e:Exception){
-                   Log.d("@@addError:",e.stackTrace.toString())
+                  // Log.d("@@addError:",e.stackTrace.toString())
                }
 
             }
@@ -671,7 +672,7 @@ object RequestSingle {
 
             override fun onResponse(call: Call, response: Response) {
                 val rs = response.body()!!.string()
-                Log.d("@@addOver:",rs)
+             //   Log.d("@@addOver:",rs)
                 if(rs.trim() != "s200"){
                     try {
                         coroutines.launch (Dispatchers.Main){
@@ -684,7 +685,7 @@ object RequestSingle {
 
                     }catch (e:Exception){
 
-                        Log.d("@@addOver:Error",e.stackTrace.toString())
+                      //  Log.d("@@addOver:Error",e.stackTrace.toString())
 
                     }
                 }else{
@@ -740,8 +741,8 @@ object RequestSingle {
                            // Log.d("@@apiJson:",arr.toString())
                        }
                    }
-                   Log.d("@@oauthJson:",this@RequestSingle.ApiData.toString())
-                   Log.d("@@runFlag:",this@RequestSingle.runFlag.toString())
+                 //  Log.d("@@oauthJson:",this@RequestSingle.ApiData.toString())
+                //   Log.d("@@runFlag:",this@RequestSingle.runFlag.toString())
                    if(this@RequestSingle.runFlag == 1){
                        coroutines.launch{(Dispatchers.Main)
                            coroutines.appInfoUserAdd.text = "新增：${this@RequestSingle.ApiData[0]["新增率"]}"
@@ -752,7 +753,7 @@ object RequestSingle {
                        }
                    }
                }catch (e:Exception){
-                Log.d("@@error:json解析错误！","-------------------")
+                //Log.d("@@error:json解析错误！","-------------------")
                }finally {
                    this@RequestSingle.runFlag += 1
                }
@@ -767,7 +768,7 @@ object RequestSingle {
      */
     fun submitModify(appId:String,bundle: Bundle,coroutines: BaseActivity) = coroutines.launch {
 
-        Log.d("@@modifyReceive:",bundle.toString())
+      //  Log.d("@@modifyReceive:",bundle.toString())
         val formBody = FormBody.Builder()
             .add("appid",bundle.getString("mId")!!)
             .add("app_name",bundle.getString("mName")!!)
@@ -791,7 +792,7 @@ object RequestSingle {
             override fun onResponse(call: Call, response: Response) {
                 val text = response.body()!!.string()
                 val doc =Jsoup.parse(text)
-                Log.d("@@resModify:",doc.toString())
+             //   Log.d("@@resModify:",doc.toString())
                 val res = doc.select("body").html().trim()
                 coroutines.launch (Dispatchers.Main){
                     if(res == "s200"){

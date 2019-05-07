@@ -231,7 +231,7 @@ class EditApp :BaseActivity() {
 
                     override fun onResponse(call: Call, response: Response) {
                         val re = response.body()!!.string()
-                        Log.d("@@upImg:",re)
+                     //   Log.d("@@upImg:",re)
                         this@EditApp.launch(Dispatchers.Main) {
                             try {
                                 if(JSONObject(re).get("code") != "s200"){

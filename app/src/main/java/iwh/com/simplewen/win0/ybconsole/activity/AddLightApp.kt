@@ -234,13 +234,13 @@ class AddLightApp : BaseActivity() {
 
                 override fun onResponse(call: Call, response: Response) {
                     val re = response.body()!!.string()
-                    Log.d("@@upImg:", re)
+                  //  Log.d("@@upImg:", re)
                     this@AddLightApp.launch(Dispatchers.Main) {
                         try {
                             if (JSONObject(re).get("code") != "s200") {
                                 Tos(JSONObject(re).get("msgCN") as String, this@AddLightApp)
                             } else {
-                                Tos("上传完成：${JSONObject(re).get("web_url")}", this@AddLightApp)
+                                Tos("上传完成!", this@AddLightApp)
                                 if (type == "logo_108") this@AddLightApp.addLLogoUrl =
                                     JSONObject(re).get("web_url") as String else this@AddLightApp.addSLogoUrl =
                                     JSONObject(re).get("web_url") as String
